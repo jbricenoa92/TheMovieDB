@@ -44,6 +44,9 @@
                                                 </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="line.3.horizontal.decrease.circle.fill" catalog="system"/>
+                                                <connections>
+                                                    <action selector="FilterButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Yt6-td-06E"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
@@ -123,6 +126,7 @@
                         <outlet property="SearchTextField" destination="SQi-L8-Pyj" id="oeZ-KT-K4k"/>
                         <outlet property="categorySegment" destination="Y00-WY-OaP" id="ep7-vq-FSi"/>
                         <outlet property="collectionView" destination="T0O-u8-DvS" id="EsX-yt-5M7"/>
+                        <outlet property="filterButton" destination="6DU-Ca-wUL" id="sEK-mW-v15"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

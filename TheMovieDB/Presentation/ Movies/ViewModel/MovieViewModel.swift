@@ -21,7 +21,7 @@ class MovieViewModel: MovieViewModelProtocol {
     var isFetchingMore = false
     var searchLetter = "" {
         didSet {
-            filterMovies(startingWith: searchLetter)
+            filterMovies(startingWith: searchLetter, data: moviesData)
         }
     }
     var onMoviesUpdated: (() -> Void)?
@@ -32,21 +32,42 @@ class MovieViewModel: MovieViewModelProtocol {
             onMoviesUpdated?()
         }
     }
+    var onlyAdult: Bool = false {
+        didSet {
+            moviesData = []
+            leakedMovies = []
+            loadMoviesData()
+        }
+    }
     var genre = "popular"
     var page = 1
-    var apiKey = "24f9cb64fa5f85e63c0ff008c04b2cd8"
-    @Published var MovieSelected: [MovieDomain] = []
+    // agregar apiKey
+    var apiKey = ""
+    @Published var movieSelected: [MovieDomain] = []
     
     init(useCase: MovieUseCaseProtocol) {
         self.useCase = useCase
     }
     
-    func filterMovies(startingWith letter: String ) {
+    func filterMovies(startingWith letter: String, data datas: [MovieDomain] ) {
         
-        let filteredList = moviesData.filter { movie in
+        let filteredList = datas.filter { movie in
             movie.originalTitle.lowercased().hasPrefix(letter.lowercased()) ||  movie.title.lowercased().hasPrefix(letter.lowercased())
         }
         self.leakedMovies = filteredList
+    }
+    
+    
+    func filterMoviesOnlyAdult(startingWith letter: String ) {
+      
+        var filteredList = moviesData
+        if(onlyAdult){
+           
+         return filteredList = moviesData.filter { movie in
+                movie.adult == true
+            }
+        }
+      filterMovies(startingWith: letter, data: filteredList)
     }
     
     func loadMoviesData(){
@@ -55,7 +76,7 @@ class MovieViewModel: MovieViewModelProtocol {
                 switch result {
                 case .success(let movies):
                     self?.moviesData.append(contentsOf: movies)
-                    self?.filterMovies(startingWith: self?.searchLetter ?? "")
+                    self?.filterMoviesOnlyAdult(startingWith: self?.searchLetter ?? "")
                     self?.onMoviesUpdated?()
                     self?.page += 1
                 case .failure(let error):

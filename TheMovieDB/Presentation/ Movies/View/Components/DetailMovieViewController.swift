@@ -6,18 +6,14 @@
 //
 
 import UIKit
-import Combine
 
 class DetailMovieViewController: UIViewController {
     
     var viewModel: MovieViewModel = DependencyInjector.shared.provideMovieViewModel() as! MovieViewModel
-    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         configUI()
-       print(viewModel.MovieSelected)
     }
 
     var imageContainer: UIImageView = {
@@ -30,16 +26,18 @@ class DetailMovieViewController: UIViewController {
     var titleLabel: UILabel = {
         let title = UILabel()
         title.text = ""
-        title.textColor = .darkGray
+        title.textColor = .darkText
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
     }()
     
     var descriptionLabel:UILabel = {
         let description = UILabel()
-        description.text = "nw_connection_copy_connected_local_endpoint_block_invoke [C2] Client called nw_connection_copy_connected_local_endpoint on unconnected nw_connection"
+        description.text = ""
         description.textColor = .darkText
         description.translatesAutoresizingMaskIntoConstraints = false
+        description.numberOfLines = 0
+        description.textAlignment = .justified
         return description
     }()
     
@@ -47,14 +45,15 @@ class DetailMovieViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = 10
+        stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
     func configUI() {
-        view.addSubview(imageContainer)
+        view.backgroundColor = .systemGray4
         view.addSubview(stackView)
+        stackView.addArrangedSubview(imageContainer)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(descriptionLabel)
         setupStackViewConstraints()
@@ -63,16 +62,15 @@ class DetailMovieViewController: UIViewController {
     
     func setupStackViewConstraints() {
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             imageContainer.widthAnchor.constraint(equalToConstant: 180),
             imageContainer.heightAnchor.constraint(equalToConstant: 180),
-            imageContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            descriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            descriptionLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: imageContainer.bottomAnchor, constant: 10),
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            
         ])
     }
 

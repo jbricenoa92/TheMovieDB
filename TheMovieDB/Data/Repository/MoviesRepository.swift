@@ -23,7 +23,7 @@ class MovieRepository: MoviesRepositoryProtocol {
     
     func fetchMovies(genre: String, page: Int, key: String, completion: @escaping (Result<([Movie]), Error>) -> Void) {
        
-        guard let url = URL(string: "https://api.themoviedb.org/3/movie/\(genre)?language=es-ES&page=\(page)&api_key=\(key)") else {
+        guard let url = URL(string: "https://api.themoviedb.org/3/movie/\(genre)?language=es-ES&page=\(page)&include_adult=true&api_key=\(key)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
             return
         }

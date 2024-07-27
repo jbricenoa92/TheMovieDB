@@ -15,6 +15,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var SearchTextField: UITextField!
     
+    
+    @IBOutlet weak var filterButton: UIButton!
+    
     var viewModel: MovieViewModel = DependencyInjector.shared.provideMovieViewModel() as! MovieViewModel
     
     
@@ -44,19 +47,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    @IBAction func FilterButtonAction(_ sender: UIButton) {
+        navigateToFilterView()
+
+    }
     
     @IBAction func CateogrySegmentAction(_ sender: UISegmentedControl) {
         if let selectedCategory = MovieCategory(rawValue: sender.selectedSegmentIndex) {
-            print(sender.selectedSegmentIndex)
             viewModel.genre = selectedCategory.title
             viewModel.moviesData = []
             viewModel.leakedMovies = []
             viewModel.page = 1
             viewModel.loadMoviesData()
-            
         }
     }
-    
 }
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
@@ -67,7 +71,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegateFl
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MovieCell
-        let movie = viewModel.leakedMovies[indexPath.row]
         cell.posterImageView.image = viewModel.leakedMovies[indexPath.row].image
         return cell
     }
@@ -84,20 +87,20 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegateFl
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.MovieSelected = [viewModel.leakedMovies[indexPath.row]]
-        navigatioToDetalleMovie()
+        viewModel.movieSelected = [viewModel.leakedMovies[indexPath.row]]
+        navigateToDetalleMovie()
     }
     
     
     @objc
-    private func navigatioToDetalleMovie(){
-     
-        let detailView = DetailMovieViewController()
-        detailView.imageContainer.image = viewModel.MovieSelected[0].image
-        detailView.titleLabel.text = viewModel.MovieSelected[0].title
+    private func navigateToDetalleMovie(){
         
+        let detailView = DetailMovieViewController()
+        detailView.imageContainer.image = viewModel.movieSelected[0].image
+        detailView.titleLabel.text = viewModel.movieSelected[0].title
+        detailView.descriptionLabel.text = viewModel.movieSelected[0].overview
         if let sheet = detailView.sheetPresentationController {
-            sheet.detents = [.medium ( )]
+            sheet.detents = [.medium()]
             sheet.selectedDetentIdentifier = .medium
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
@@ -106,5 +109,21 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegateFl
             
         }
     }
+    
+    @objc
+    private func navigateToFilterView(){
+        
+        let filterView = FilterViewController()
+        
+        if let sheet = filterView.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.selectedDetentIdentifier = .medium
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+            self.present(filterView, animated: true)
+            
+        }
+    }
+    
 }
 
